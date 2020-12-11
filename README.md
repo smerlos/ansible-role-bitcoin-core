@@ -16,7 +16,7 @@ Example:
 - hosts: localhost
   become: true
   roles:
-    - unxnn.bitcoin-core
+    - unxnn.bitcoin_core
   vars:
     bitcoin_version: 0.20.1
     bitcoin_user: non-default

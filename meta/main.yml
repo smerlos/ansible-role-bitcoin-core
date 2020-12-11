@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: unxnn
-  role_name: bitcoin-core
+  role_name: bitcoin_core
   description: Bitcoin Core installation role
   license: MIT
   min_ansible_version: 2.7
@@ -17,8 +17,8 @@ galaxy_info:
         - 33
     - name: Debian
       versions:
-        - 9
-        - 10
+        - stretch
+        - buster
     - name: Ubuntu
       versions:
         - trusty
