@@ -1,0 +1,37 @@
+---
+
+- import_tasks: preflight.yml
+  tags:
+    - bitcoin_install
+    - bitcoin_configure
+    - bitcoin_run
+
+- import_tasks: install.yml
+  become: true
+  when: not __bitcoin_is_installed.stat.exists
+  tags:
+    - bitcoin_install
+
+- name: Add configuration file
+  template:
+    src: bitcoin.conf.j2
+    dest: "{{ _bitcoin_conf_dir }}/bitcoin.conf"
+    owner: "{{ bitcoin_user }}"
+    group: "{{ bitcoin_group }}"
+    mode: '0600'
+  notify: restart bitcoind
+
+- name: Add systemd unit file
+  template:
+    src: bitcoin.service.j2
+    dest: /etc/systemd/system/bitcoin.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart bitcoind
+
+- name: Ensurce bitcoind enabled and started
+  systemd:
+    enabled: true
+    name: bitcoin
+    state: started

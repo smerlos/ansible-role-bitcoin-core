@@ -1,0 +1,37 @@
+---
+- name: Assert usage of systemd as an init system
+  assert:
+    that: ansible_service_mgr == 'systemd'
+    msg: "This role only works with systemd"
+
+- name: Get systemd version
+  command: systemctl --version
+  changed_when: false
+  check_mode: false
+  register: __systemd_version
+  tags:
+    - skip_ansible_lint
+
+- name: Set systemd version fact
+  set_fact:
+    bitcoin_systemd_version: "{{ __systemd_version.stdout_lines[0] | regex_replace('^systemd\\s(\\d+).*$', '\\1') }}"
+
+- name: Check if bitcoind is installed
+  stat:
+    path: "{{ _bitcoin_binary_install_dir }}/bitcoind"
+  register: __bitcoin_is_installed
+  check_mode: false
+  tags:
+    - bitcoin_install
+
+- name: Gather currently installed bitcoind version (if any)
+  command: "{{ _bitcoin_binary_install_dir }}/bitcoind --version"
+  args:
+    warn: false
+  changed_when: false
+  register: __bitcoin_current_version_output
+  check_mode: false
+  when: __bitcoin_is_installed.stat.exists
+  tags:
+    - bitcoin_install
+    - skip_ansible_lint

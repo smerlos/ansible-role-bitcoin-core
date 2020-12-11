@@ -1,0 +1,228 @@
+{{ ansible_managed | comment }}
+##
+## bitcoin.conf configuration file. Lines beginning with # are comments.
+##
+
+# Network-related settings:
+
+# Note that if you use testnet or regtest, particularly with the options
+# addnode, connect, port, bind, rpcport, rpcbind or wallet, you will also
+# want to read "[Sections]" further down.
+
+# Run on the test network instead of the real bitcoin network.
+testnet={{ bitcoin_conf_testnet }}
+
+# Run a regression test network
+regtest={{ bitcoin_conf_regtest }}
+
+# Connect via a SOCKS5 proxy
+{% if bitcoin_conf_proxy is defined %}
+proxy={{ bitcoin_conf_proxy }}
+{% endif %}
+
+# Bind to given address and always listen on it. Use [host]:port notation for IPv6
+{% if bitcoin_conf_bind is defined %}
+bind={{ bitcoin_conf_bind }}
+{% endif %}
+
+# Bind to given address and add permission flags to peers connecting to it. Use [host]:port notation for IPv6
+{% if bitcoin_conf_whitebind is defined %}
+whitebind={{ bitcoin_conf_whitebind }}
+{% endif %}
+
+##############################################################
+##            Quick Primer on addnode vs connect            ##
+##  Let's say for instance you use addnode=4.2.2.4          ##
+##  addnode will connect you to and tell you about the      ##
+##    nodes connected to 4.2.2.4.  In addition it will tell ##
+##    the other nodes connected to it that you exist so     ##
+##    they can connect to you.                              ##
+##  connect will not do the above when you 'connect' to it. ##
+##    It will *only* connect you to 4.2.2.4 and no one else.##
+##                                                          ##
+##  So if you're behind a firewall, or have other problems  ##
+##  finding nodes, add some using 'addnode'.                ##
+##                                                          ##
+##  If you want to stay private, use 'connect' to only      ##
+##  connect to "trusted" nodes.                             ##
+##                                                          ##
+##  If you run multiple nodes on a LAN, there's no need for ##
+##  all of them to open lots of connections.  Instead       ##
+##  'connect' them all to one node that is port forwarded   ##
+##  and has lots of connections.                            ##
+##       Thanks goes to [Noodle] on Freenode.               ##
+##############################################################
+
+# Use as many addnode= settings as you like to connect to specific peers
+{% if bitcoin_conf_addnode is defined %}
+{% for node in bitcoin_conf_addnode -%}
+addnode={{ node }}
+{% endfor %}
+{% endif %}
+
+# Alternatively use as many connect= settings as you like to connect ONLY to specific peers
+{% if bitcoin_conf_connect is defined %}
+{% for connect in bitcoin_conf_connect -%}
+connect={{ connect }}
+{% endfor %}
+{% endif %}
+
+# Listening mode, enabled by default except when 'connect' is being used
+{% if bitcoin_conf_listen is defined %}
+listen={{ bitcoin_conf_listen }}
+{% endif %}
+
+# Port on which to listen for connections (default: 8333, testnet: 18333, regtest: 18444)
+{% if bitcoin_conf_port is defined %}
+port={{ bitcoin_conf_port }}
+{% endif %}
+
+# Maximum number of inbound+outbound connections.
+{% if bitcoin_conf_maxconnections is defined %}
+maxconnections={{ bitcoin_conf_maxconnections }}
+{% endif %}
+
+#
+# JSON-RPC options (for controlling a running Bitcoin/bitcoind process)
+#
+
+# server=1 tells Bitcoin-Qt and bitcoind to accept JSON-RPC commands
+{% if bitcoin_conf_server is defined %}
+server={{ bitcoin_conf_server }}
+{% endif %}
+
+# Bind to given address to listen for JSON-RPC connections.
+# Refer to the manpage or bitcoind -help for further details.
+{% if bitcoin_conf_rpcbind is defined %}
+rpcbind={{ bitcoin_conf_rpcbind }}
+{% endif %}
+
+# If no rpcpassword is set, rpc cookie auth is sought. The default `-rpccookiefile` name
+# is .cookie and found in the `-datadir` being used for bitcoind. This option is typically used
+# when the server and client are run as the same user.
+#
+# If not, you must set rpcuser and rpcpassword to secure the JSON-RPC API.
+#
+# The config option `rpcauth` can be added to server startup argument. It is set at initialization time
+# using the output from the script in share/rpcauth/rpcauth.py after providing a username:
+#
+# ./share/rpcauth/rpcauth.py alice
+# String to be appended to bitcoin.conf:
+# rpcauth=alice:f7efda5c189b999524f151318c0c86$d5b51b3beffbc02b724e5d095828e0bc8b2456e9ac8757ae3211a5d9b16a22ae
+# Your password:
+# DONT_USE_THIS_YOU_WILL_GET_ROBBED_8ak1gI25KFTvjovL3gAM967mies3E=
+#
+# On client-side, you add the normal user/password pair to send commands:
+{% if bitcoin_conf_rpcuser is defined %}
+rpcuser={{ bitcoin_conf_rpcuser }}
+{% endif %}
+{% if bitcoin_conf_rpcpassword is defined %}
+rpcpassword={{ bitcoin_conf_rpcpassword }}
+{% endif %}
+#
+# You can even add multiple entries of these to the server conf file, and client can use any of them:
+# rpcauth=bob:b2dd077cb54591a2f3139e69a897ac$4e71f08d48b4347cf8eff3815c0e25ae2e9a4340474079f55705f40574f4ec99
+
+# How many seconds bitcoin will wait for a complete RPC HTTP request.
+# after the HTTP connection is established.
+{% if bitcoin_conf_rpcclienttimeout is defined %}
+rpcclienttimeout={{ bitcoin_conf_rpcclienttimeout }}
+{% endif %}
+
+# By default, only RPC connections from localhost are allowed.
+# Specify as many rpcallowip= settings as you like to allow connections from other hosts,
+# either as a single IPv4/IPv6 or with a subnet specification.
+
+# NOTE: opening up the RPC port to hosts outside your local trusted network is NOT RECOMMENDED,
+# because the rpcpassword is transmitted over the network unencrypted.
+
+# server=1 tells Bitcoin-Qt to accept JSON-RPC commands.
+# it is also read by bitcoind to determine if RPC should be enabled
+{% if bitcoin_conf_rpcallowip is defined %}
+{% for allowip in bitcoin_conf_rpcallowip -%}
+rpcallowip={{ allowip }}
+{% endfor %}
+{% endif %}
+
+# Listen for RPC connections on this TCP port:
+{% if bitcoin_conf_rpcport is defined %}
+rpcport={{ bitcoin_conf_rpcport }}
+{% endif %}
+
+# You can use Bitcoin or bitcoind to send commands to Bitcoin/bitcoind
+# running on another host using this option:
+{% if bitcoin_conf_rpcconnect is defined %}
+rpcconnect={{ bitcoin_conf_rpcconnect }}
+{% endif %}
+
+# Wallet options
+
+# Specify where to find wallet, lockfile and logs. If not present, those files will be
+# created as new.
+{% if bitcoin_conf_wallet is defined %}
+wallet={{ bitcoin_conf_wallet }}
+{% endif %}
+
+# Create transactions that have enough fees so they are likely to begin confirmation within n blocks (default: 6).
+# This setting is over-ridden by the -paytxfee option.
+{% if bitcoin_conf_txconfirmtarget is defined %}
+txconfirmtarget={{ bitcoin_conf_txconfirmtarget }}
+{% endif %}
+
+# Pay a transaction fee every time you send bitcoins.
+{% if bitcoin_conf_paytxfee is defined %}
+paytxfee={{ bitcoin_conf_paytxfee }}
+{% endif %}
+
+# Miscellaneous options
+
+# Pre-generate this many public/private key pairs, so wallet backups will be valid for
+# both prior transactions and several dozen future transactions.
+{% if bitcoin_conf_keypool is defined %}
+keypool={{ bitcoin_conf_keypool }}
+{% endif %}
+
+# Enable pruning to reduce storage requirements by deleting old blocks.
+# This mode is incompatible with -txindex and -rescan.
+# 0 = default (no pruning).
+# 1 = allows manual pruning via RPC.
+# >=550 = target to stay under in MiB.
+{% if bitcoin_conf_prune is defined %}
+prune={{ bitcoin_conf_prune }}
+{% endif %}
+
+# User interface options
+
+# Start Bitcoin minimized
+#min=1
+
+# Minimize to the system tray
+#minimizetotray=1
+
+# [Sections]
+# Most options apply to mainnet, testnet and regtest.
+# If you want to confine an option to just one network, you should add it in the
+# relevant section below.
+# EXCEPTIONS: The options addnode, connect, port, bind, rpcport, rpcbind and wallet
+# only apply to mainnet unless they appear in the appropriate section below.
+
+# Options only for mainnet
+[main]
+
+# Options only for testnet
+[test]
+{% if bitcoin_conf_rpcbind_test is defined %}
+rpcbind={{ bitcoin_conf_rpcbind_test }}
+{% endif %}
+{% if bitcoin_conf_rpcport_test is defined %}
+rpcport={{ bitcoin_conf_rpcport_test }}
+{% endif %}
+
+# Options only for regtest
+[regtest]
+{% if bitcoin_conf_rpcbind_regtest is defined %}
+rpcbind={{ bitcoin_conf_rpcbind_regtest }}
+{% endif %}
+{% if bitcoin_conf_rpcport_regtest is defined %}
+rpcport={{ bitcoin_conf_rpcport_regtest }}
+{% endif %}

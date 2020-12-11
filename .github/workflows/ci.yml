@@ -1,0 +1,22 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the codebase
+        uses: actions/checkout@v2
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
+        
+      - name: Install lint dependencies
+        run: pip3 install ansible ansible-lint yamllint
+
+      - name: Lint role
+        run: |
+          ansible-lint
+          yamllint .

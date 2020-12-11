@@ -1,0 +1,5 @@
+---
+_bitcoin_binary_install_dir: "/usr/local/bin"
+_bitcoin_data_dir: "/var/lib/bitcoin"
+_bitcoin_conf_dir: "/etc/bitcoin"
+_bitcoin_conf_file: "bitcoin.conf"

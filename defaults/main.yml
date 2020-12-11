@@ -1,0 +1,114 @@
+---
+
+bitcoin_version: 0.20.1
+
+bitcoin_user: bitcoin
+bitcoin_group: bitcoin
+bitcoin_home_dir: /home/bitcoin
+
+# =========================
+# Hardening systemd options
+# =========================
+bitcoin_private_tmp: true
+bitcoin_protect_system: full
+bitcoin_protect_home: true
+bitcoin_no_new_privileges: true
+bitcoin_private_devices: true
+bitcoin_memory_deny_write_execute: true
+
+
+# =============
+# Configuration
+# =============
+
+# Run on the test network instead of the real bitcoin network.
+bitcoin_conf_testnet: 0
+
+# Run a regression test network
+bitcoin_conf_regtest: 0
+
+# Connect via a SOCKS5 proxy
+# bitcoin_conf_proxy: 127.0.0.1:9050
+
+# Bind to given address and always listen on it.
+# Use [host]:port notation for IPv6
+# bitcoin_conf_bind: <addr>
+
+# Bind to given address and add permission flags to peers connecting to it.
+# Use [host]:port notation for IPv6
+# bitcoin_conf_whitebind: perm@<addr>
+
+# Use as many bitcoin_conf_addnode settings as you like
+# to connect to specific peers
+# bitcoin_conf_addnode:
+#   - 1.1.1.1
+#   - 2.2.2.2
+
+# Alternatively use as many bitcoin_conf_connect settings as you like
+# to connect ONLY to specific peers
+# bitcoin_conf_connect:
+#   - 1.1.1.1
+#   - 2.2.2.2
+
+# Listening mode, enabled by default except when 'connect' is being used
+# bitcoin_conf_listen: 1
+
+# Port on which to listen for connections (default: 8333, testnet: 18333, regtest: 18444)
+# bitcoin_conf_port: 8333
+
+# Maximum number of inbound+outbound connections.
+# bitcoin_conf_maxconnections: 1000
+
+# server=1 tells Bitcoin-Qt and bitcoind to accept JSON-RPC commands
+# bitcoin_conf_server: 0
+
+# Bind to given address to listen for JSON-RPC connections.
+# Refer to the manpage or bitcoind -help for further details.
+# bitcoin_conf_rpcbind: <addr>
+# bitcoin_conf_rpcbind_test: <addr>
+# bitcoin_conf_rpcbind_regtest: <addr>
+
+# bitcoin_conf_rpcuser: alice
+# bitcoin_conf_rpcpassword: DONT_USE_THIS_YOU_WILL_GET_ROBBED_8ak1gI25KFTvjovL3gAM967mies3E=
+
+# How many seconds bitcoin will wait for a complete RPC HTTP request.
+# after the HTTP connection is established.
+# bitcoin_conf_rpcclienttimeout: 30
+
+# server=1 tells Bitcoin-Qt to accept JSON-RPC commands.
+# it is also read by bitcoind to determine if RPC should be enabled
+# bitcoin_conf_rpcallowip:
+#   - 10.1.1.34/255.255.255.0
+#   - 1.2.3.4/24
+#   - 2001:db8:85a3:0:0:8a2e:370:7334/96
+
+# Listen for RPC connections on this TCP port:
+# bitcoin_conf_rpcport: 8332
+# bitcoin_conf_rpcport_test: 8332
+# bitcoin_conf_rpcport_regtest: 8332
+
+# You can use Bitcoin or bitcoind to send commands to Bitcoin/bitcoind
+# running on another host using this option:
+# bitcoin_conf_rpcconnect: 127.0.0.1
+
+# Specify where to find wallet, lockfile and logs. If not present, those files will be
+# created as new.
+# bitcoin_conf_wallet: </path/to/dir>
+
+# Create transactions that have enough fees so they are likely to begin confirmation within n blocks (default: 6).
+# This setting is over-ridden by the -paytxfee option.
+# bitcoin_conf_txconfirmtarget: n
+
+# Pay a transaction fee every time you send bitcoins.
+# bitcoin_conf_paytxfee: 0.000x
+
+# Pre-generate this many public/private key pairs, so wallet backups will be valid for
+# both prior transactions and several dozen future transactions.
+# bitcoin_conf_keypool: 100
+
+# Enable pruning to reduce storage requirements by deleting old blocks.
+# This mode is incompatible with -txindex and -rescan.
+# 0 = default (no pruning).
+# 1 = allows manual pruning via RPC.
+# >=550 = target to stay under in MiB.
+# bitcoin_conf_prune: 500

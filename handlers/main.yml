@@ -1,0 +1,7 @@
+---
+- name: restart bitcoin
+  become: true
+  systemd:
+    daemon_reload: true
+    name: bitcoin
+    state: restarted
